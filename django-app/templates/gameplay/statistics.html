@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card"><h1>📊 Statistics</h1>
+<p>Total Stories: {{ total_stories }} | Total Plays: {{ total_plays }} | Total Users: {{ total_users }}</p></div>
+
+<div class="card"><h2>Top 10 Most Played Stories</h2>
+{% if top_stories %}<table><thead><tr><th>Story</th><th>Plays</th></tr></thead><tbody>
+{% for item in top_stories %}
+<tr><td><a href="{% url 'story_detail' item.story.id %}">{{ item.story.title }}</a></td><td>{{ item.play_count }}</td></tr>
+{% endfor %}
+</tbody></table>
+{% else %}<p>No plays yet</p>{% endif %}</div>
+
+<div class="card"><h2>Recent Ratings</h2>
+{% if rating_data %}<table><thead><tr><th>Story</th><th>User</th><th>Rating</th><th>Date</th></tr></thead><tbody>
+{% for item in rating_data %}
+<tr><td><a href="{% url 'story_detail' item.story.id %}">{{ item.story.title }}</a></td>
+<td>{{ item.rating.user.username }}</td><td>⭐ {{ item.rating.stars }}/5</td>
+<td>{{ item.rating.created_at|date:"M d" }}</td></tr>
+{% endfor %}
+</tbody></table>
+{% else %}<p>No ratings yet</p>{% endif %}</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Playing: {{ story.title }} - NAHB{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>{{ story.title }}</h2>
+    {% if page.illustration_url %}<img src="{{ page.illustration_url }}" style="max-width:100%;border-radius:8px;margin:1rem 0;">{% endif %}
+    <div style="font-size:1.1rem;line-height:1.8;margin:1.5rem 0;">{{ page.text }}</div>
+    
+    {% if page.is_ending %}
+        <p style="color:#27ae60;font-weight:bold;">🏁 THE END {% if page.ending_label %}- {{ page.ending_label }}{% endif %}</p>
+        <a href="{% url 'story_ending' story.id page.id %}" class="btn btn-success">View Ending Stats</a>
+    {% else %}
+        {% if dice_roll %}<p style="color:#3498db;font-weight:bold;">🎲 You rolled: {{ dice_roll }}</p>{% endif %}
+        
+        <form method="post" style="margin:1rem 0;">{% csrf_token %}<button type="submit" name="roll_dice" class="btn">🎲 Roll Dice</button></form>
+        
+        <h3>What do you do?</h3>
+        {% for choice in available_choices %}
+            <form method="post" action="{% url 'make_choice' story.id choice.id %}" style="margin:0.5rem 0;">
+                {% csrf_token %}
+                <input type="hidden" name="current_page_id" value="{{ page.id }}">
+                <button type="submit" class="btn btn-success" style="width:100%;text-align:left;">
+                    {{ choice.text }}{% if choice.dice_requirement %} <small>(Requires 🎲≥{{ choice.dice_requirement }})</small>{% endif %}
+                </button>
+            </form>
+        {% empty %}
+            <p>No choices available. This might be a dead end!</p>
+        {% endfor %}
+    {% endif %}
+</div>
+<a href="{% url 'story_detail' story.id %}" class="btn btn-secondary">← Back to Story Details</a>
+{% endblock %}
