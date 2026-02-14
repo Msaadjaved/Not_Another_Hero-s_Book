@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card"><h1>Edit Page</h1>
+<form method="post">{% csrf_token %}
+<div class="form-group"><label>Text:</label><textarea name="text">{{ page.text }}</textarea></div>
+<div class="form-group"><label><input type="checkbox" name="is_ending" {% if page.is_ending %}checked{% endif %}> Ending page</label></div>
+<div class="form-group"><label>Ending Label:</label><input type="text" name="ending_label" value="{{ page.ending_label|default:'' }}"></div>
+<div class="form-group"><label>Illustration URL:</label><input type="url" name="illustration_url" value="{{ page.illustration_url|default:'' }}"></div>
+<button type="submit" class="btn btn-success">Update</button>
+<a href="{% url 'edit_story' story.id %}" class="btn btn-secondary">Cancel</a>
+</form></div>
+{% endblock %}

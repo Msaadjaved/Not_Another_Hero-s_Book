@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Edit: {{ story.title }}{% endblock %}
+{% block content %}
+<div class="card"><h1>Edit Story: {{ story.title }}</h1>
+<form method="post">{% csrf_token %}
+<div class="form-group"><label>Title:</label><input type="text" name="title" value="{{ story.title }}"></div>
+<div class="form-group"><label>Description:</label><textarea name="description">{{ story.description }}</textarea></div>
+<div class="form-group"><label>Status:</label><select name="status">
+<option value="draft" {% if story.status == 'draft' %}selected{% endif %}>Draft</option>
+<option value="published" {% if story.status == 'published' %}selected{% endif %}>Published</option>
+</select></div>
+<div class="form-group"><label>Illustration URL:</label><input type="url" name="illustration_url" value="{{ story.illustration_url|default:'' }}"></div>
+<button type="submit" class="btn btn-success">Update</button>
+</form></div>
+
+<div class="card"><h2>Pages ({{ story.pages|length }})</h2>
+<a href="{% url 'create_page' story.id %}" class="btn btn-success">+ Add Page</a>
+{% if story.pages %}
+<table style="margin-top:1rem;"><thead><tr><th>ID</th><th>Text Preview</th><th>Ending?</th><th>Choices</th><th>Actions</th></tr></thead><tbody>
+{% for page in story.pages %}
+<tr><td>{{ page.id }}</td><td>{{ page.text|truncatewords:10 }}</td>
+<td>{% if page.is_ending %}✓ {{ page.ending_label }}{% else %}-{% endif %}</td>
+<td>{{ page.choices|length }}</td>
+<td><a href="{% url 'edit_page' page.id %}" class="btn">Edit</a>
+<a href="{% url 'create_choice' page.id %}" class="btn">+ Choice</a>
+<form method="post" action="{% url 'delete_page' page.id %}" style="display:inline;">{% csrf_token %}
+<button class="btn btn-danger" onclick="return confirm('Delete?')">Del</button></form>
+</td></tr>
+{% endfor %}
+</tbody></table>
+{% endif %}</div>
+<a href="{% url 'author_dashboard' %}" class="btn btn-secondary">Back</a>
+{% endblock %}

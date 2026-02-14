@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Author Dashboard{% endblock %}
+{% block content %}
+<div class="card"><h1>✍️ Author Dashboard</h1>
+<a href="{% url 'create_story' %}" class="btn btn-success">+ Create New Story</a></div>
+
+<div class="card"><h2>📝 Draft Stories ({{ drafts|length }})</h2>
+{% if drafts %}<div class="story-grid">
+{% for story in drafts %}
+<div class="story-card"><h3>{{ story.title }}</h3><p>{{ story.description|truncatewords:15 }}</p>
+<a href="{% url 'edit_story' story.id %}" class="btn">Edit</a>
+<form method="post" action="{% url 'delete_story' story.id %}" style="display:inline;">{% csrf_token %}
+<button type="submit" class="btn btn-danger" onclick="return confirm('Delete?')">Delete</button></form>
+</div>{% endfor %}</div>
+{% else %}<p>No drafts</p>{% endif %}</div>
+
+<div class="card"><h2>✅ Published Stories ({{ published|length }})</h2>
+{% if published %}<div class="story-grid">
+{% for story in published %}
+<div class="story-card"><h3>{{ story.title }}</h3>
+<a href="{% url 'story_detail' story.id %}" class="btn">View</a>
+<a href="{% url 'edit_story' story.id %}" class="btn">Edit</a></div>
+{% endfor %}</div>
+{% else %}<p>No published stories</p>{% endif %}</div>
+{% endblock %}

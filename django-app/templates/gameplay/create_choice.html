@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card"><h1>Add Choice to Page</h1>
+<form method="post">{% csrf_token %}
+<div class="form-group"><label>Choice Text*:</label><input type="text" name="text" required></div>
+<div class="form-group"><label>Next Page*:</label><select name="next_page_id" required>
+<option value="">Select page...</option>
+{% for p in all_pages %}<option value="{{ p.id }}">{{ p.id }}: {{ p.text|truncatewords:8 }}</option>{% endfor %}
+</select></div>
+<div class="form-group"><label>Dice Requirement (1-6, optional):</label><input type="number" name="dice_requirement" min="1" max="6"></div>
+<button type="submit" class="btn btn-success">Create Choice</button>
+<a href="{% url 'edit_story' story.id %}" class="btn btn-secondary">Cancel</a>
+</form></div>
+{% endblock %}
