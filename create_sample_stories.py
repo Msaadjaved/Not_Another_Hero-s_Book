@@ -251,7 +251,7 @@ def create_story_3_detective():
         "description": "You're a private detective in a rain-soaked city. A mysterious client offers you a case that could make your career - or end your life. Trust no one. Question everything.",
         "status": "published",
         "author_id": 1,
-        "illustration_url": "https://images.unsplash.com/photo-1551731409-43eb3e517a1a?w=800"
+        "illustration_url": "https://images.unsplash.com/photo-1608311430809-596bee7b41fe?q=80&w=1331&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     }
     
     response = requests.post(f"{API_URL}/stories", json=story_data, headers=HEADERS)
