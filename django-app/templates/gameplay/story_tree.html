@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card"><h1>🌳 Story Tree: {{ story.title }}</h1>
+<p>Visualization of story structure with {{ tree_data.nodes|length }} pages and {{ tree_data.edges|length }} choices.</p>
+<div id="tree-viz" style="background:#f8f9fa;padding:2rem;border-radius:8px;min-height:400px;">
+<p><strong>Nodes:</strong> {% for node in tree_data.nodes %}
+[{{ node.id }}{% if node.is_start %}*START*{% endif %}{% if node.is_ending %}🏁{% endif %}] {% endfor %}</p>
+<p><strong>Edges:</strong> {% for edge in tree_data.edges %}
+{{ edge.from }}→{{ edge.to }} {% endfor %}</p>
+</div>
+<a href="{% url 'story_detail' story.id %}" class="btn btn-secondary">Back</a>
+</div>
+{% endblock %}

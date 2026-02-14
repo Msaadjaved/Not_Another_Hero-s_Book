@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Player Path - {{ story.title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>🗺️ Your Journey Through: {{ story.title }}</h1>
+    
+    <p><strong>Play Date:</strong> {{ play.created_at|date:"M d, Y H:i" }}</p>
+    <p><strong>Final Ending:</strong> 
+        {% if path_data %}
+            {% for item in path_data %}
+                {% if item.page.is_ending %}
+                    <span class="badge badge-published">{{ item.page.ending_label|default:"The End" }}</span>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </p>
+</div>
+
+<div class="card">
+    <h2>📖 Your Complete Path</h2>
+    <p>This shows every page you visited and every choice you made during this playthrough.</p>
+    
+    {% if path_data %}
+        <div style="margin-top: 2rem;">
+            {% for item in path_data %}
+                <div style="padding: 1.5rem; margin: 1rem 0; border-left: 4px solid {% if item.page.is_ending %}#27ae60{% else %}#3498db{% endif %}; background: #f8f9fa; border-radius: 4px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                        <span style="background: {% if item.page.is_ending %}#27ae60{% else %}#3498db{% endif %}; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-weight: bold; margin-right: 1rem;">
+                            Step {{ item.node.sequence }}
+                        </span>
+                        {% if item.page.is_ending %}
+                            <span style="color: #27ae60; font-weight: bold;">🏁 ENDING</span>
+                        {% endif %}
+                    </div>
+                    
+                    <p style="margin: 1rem 0; font-size: 1rem; line-height: 1.6;">
+                        {{ item.page.text|truncatewords:50 }}
+                    </p>
+                    
+                    {% if item.node.dice_roll %}
+                        <p style="color: #e74c3c; font-weight: bold; margin-top: 0.5rem;">
+                            🎲 You rolled: {{ item.node.dice_roll }}
+                        </p>
+                    {% endif %}
+                    
+                    {% if not item.page.is_ending %}
+                        <p style="margin-top: 0.5rem; color: #7f8c8d; font-style: italic;">
+                            → You made a choice and continued...
+                        </p>
+                    {% endif %}
+                </div>
+                
+                {% if not forloop.last and not item.page.is_ending %}
+                    <div style="text-align: center; color: #95a5a6; margin: 0.5rem 0;">
+                        ↓
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: #95a5a6; text-align: center; padding: 2rem;">
+            No path data available for this play.
+        </p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>📊 Path Statistics</h3>
+    <p><strong>Total Steps:</strong> {{ path_data|length }}</p>
+    <p><strong>Choices Made:</strong> {{ path_data|length|add:"-1" }}</p>
+    {% if path_data %}
+        <p><strong>Story Length:</strong> 
+            {% if path_data|length <= 3 %}Short path{% elif path_data|length <= 6 %}Medium path{% else %}Long, thorough exploration{% endif %}
+        </p>
+    {% endif %}
+</div>
+
+<div style="margin-top: 2rem;">
+    <a href="{% url 'story_detail' story.id %}" class="btn btn-secondary">← Back to Story</a>
+    <a href="{% url 'play_story' story.id %}" class="btn btn-success">▶ Play Again</a>
+    <a href="{% url 'profile' %}" class="btn">View All Your Plays</a>
+</div>
+
+{% endblock %}

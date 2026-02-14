@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card"><h1>🛡️ Admin Dashboard</h1>
+<p>Total Stories: {{ total_stories }} | Total Plays: {{ total_plays }} | Total Users: {{ total_users }}</p></div>
+
+<div class="card"><h2>🚩 Pending Reports ({{ pending_reports.count }})</h2>
+{% if pending_reports %}<table><thead><tr><th>Story ID</th><th>Reported By</th><th>Reason</th><th>Date</th><th>Actions</th></tr></thead><tbody>
+{% for report in pending_reports %}
+<tr><td><a href="{% url 'story_detail' report.story_id %}">Story {{ report.story_id }}</a></td>
+<td>{{ report.user.username }}</td><td>{{ report.get_reason_display }}</td>
+<td>{{ report.created_at|date:"M d, Y" }}</td>
+<td><form method="post" action="{% url 'suspend_story' report.story_id %}" style="display:inline;">{% csrf_token %}
+<button class="btn btn-danger">Suspend Story</button></form>
+<form method="post" action="{% url 'update_report_status' report.id %}" style="display:inline;">{% csrf_token %}
+<input type="hidden" name="status" value="dismissed">
+<button class="btn btn-secondary">Dismiss</button></form></td></tr>
+{% endfor %}
+</tbody></table>
+{% else %}<p>No pending reports</p>{% endif %}</div>
+{% endblock %}
