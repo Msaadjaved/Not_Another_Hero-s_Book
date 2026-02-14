@@ -530,8 +530,8 @@ Never lose progress:
 
 ## 👥 Authors
 
-- **Student 1:** Muhammad Saad Javed - Backend
-- **Student 2:** Hassan - Frontend
+- **Muhammad Saad Javed** - Backend
+- **Hassan** - Frontend
 
 ---
 
