@@ -7,15 +7,15 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - FLASK_APP=run.py
-      - FLASK_ENV=development
-      - SECRET_KEY=your-secret-key-2024
+      - SECRET_KEY=flask-secret-key-change-in-production
       - API_KEY=your-secret-api-key-2024
+      - DATABASE_URL=sqlite:///stories.db
     volumes:
-      - ./flask-api/instance:/app/instance
+      - ./flask-api:/app
+      - flask-db:/app/instance
     networks:
       - nahb-network
-    command: python run.py
+    restart: unless-stopped
 
   django-app:
     build: ./django-app
@@ -23,23 +23,23 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - SECRET_KEY=your-django-secret-key-2024
+      - SECRET_KEY=django-secret-key-change-in-production
       - FLASK_API_URL=http://flask-api:5000
       - FLASK_API_KEY=your-secret-api-key-2024
-    depends_on:
-      - flask-api
+      - DEBUG=True
     volumes:
       - ./django-app:/app
+      - django-db:/app/db
+    depends_on:
+      - flask-api
     networks:
       - nahb-network
-    command: >
-      sh -c "python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
+    restart: unless-stopped
 
 networks:
   nahb-network:
     driver: bridge
 
 volumes:
-  flask-data:
-  django-data:
+  flask-db:
+  django-db:

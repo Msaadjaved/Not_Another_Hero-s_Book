@@ -6,7 +6,7 @@ Interactive storytelling platform built with Flask & Django - Final Project for 
 
 **Team Size:** 2 students  
 **Grade Level Target:** 18-20/20  
-**Deadline:** February 8, 2026, 11:55 PM
+**Deadline:** February 14, 2026, 11:55 PM
 
 ---
 
@@ -115,8 +115,8 @@ NAHB is a full-stack web application that brings Choose Your Own Adventure stori
 
 ```bash
 # Clone the repository
-git clone https://github.com/YourUsername/NAHB-Project.git
-cd NAHB-Project
+git https://github.com/Msaadjaved/Not_Another_Hero-s_Book.git
+cd Not_Another_Hero-s_Book
 
 # Start both services
 docker-compose up
@@ -530,8 +530,8 @@ Never lose progress:
 
 ## 👥 Authors
 
-- **Student 1:** [Your Name] - Backend (Flask API, Models, Authentication)
-- **Student 2:** [Teammate Name] - Frontend (Templates, UI, Documentation)
+- **Student 1:** Muhammad Saad Javed - Backend
+- **Student 2:** Hassan - Frontend
 
 ---
 
@@ -555,7 +555,7 @@ This project is submitted as coursework for EPITA's Python for Web Applications 
 For questions or issues:
 - Check QUICKSTART.md for common setup problems
 - Review PROJECT_SUMMARY.md for feature details
-- Contact: [Your Email]
+- Contact: muhammadsaadjaved5@gmail.com, chhassanraza2001@gmail.com
 
 ---
 
@@ -564,7 +564,7 @@ For questions or issues:
 **Course:** Python for Web Applications  
 **Institution:** EPITA  
 **Semester:** Third Semester  
-**Submission Date:** February 8, 2026, 11:55 PM
+**Submission Date:** February 14, 2026, 11:55 PM
 
 **Grade Levels:**
 - 10/20 - MVP (Basic functionality)
