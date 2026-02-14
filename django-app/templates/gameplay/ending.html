@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Ending - {{ story.title }}{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>🏁 {% if ending_page.ending_label %}{{ ending_page.ending_label }}{% else %}The End{% endif %}</h1>
+    <div style="font-size:1.2rem;margin:1.5rem 0;">{{ ending_page.text }}</div>
+    
+    <div style="background:#f8f9fa;padding:1rem;border-radius:4px;margin:1.5rem 0;">
+        <h3>📊 Ending Statistics</h3>
+        <p><strong>{{ plays_with_ending }}</strong> out of <strong>{{ total_plays }}</strong> players (<strong>{{ percentage }}%</strong>) reached this ending.</p>
+    </div>
+    
+    {% if play_id and user.is_authenticated %}
+    <div style="background:#e8f5e9;padding:1rem;border-radius:4px;margin:1.5rem 0;border-left:4px solid #27ae60;">
+        <h3>🗺️ Your Journey</h3>
+        <p>Want to see the complete path you took through this story?</p>
+        <a href="{% url 'player_path' play_id %}" class="btn btn-success" style="margin-top:0.5rem;">
+            🗺️ View Your Complete Journey
+        </a>
+    </div>
+    {% endif %}
+    
+    <div style="margin-top:1.5rem;">
+        <a href="{% url 'play_story' story.id %}" class="btn btn-success">▶ Play Again</a>
+        <a href="{% url 'story_detail' story.id %}" class="btn">Story Details</a>
+        <a href="{% url 'home' %}" class="btn btn-secondary">Browse Stories</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'profile' %}" class="btn">View All Your Plays</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

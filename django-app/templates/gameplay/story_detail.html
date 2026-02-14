@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ story.title }} - NAHB{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>{{ story.title }}</h1>
+    <p><strong>Status:</strong> <span class="badge badge-{{ story.status }}">{{ story.status|title }}</span></p>
+    <p>{{ story.description }}</p>
+    
+    {% if story.illustration_url %}
+        <img src="{{ story.illustration_url }}" alt="{{ story.title }}" style="max-width: 100%; border-radius: 8px; margin: 1rem 0;">
+    {% endif %}
+    
+    <div style="margin-top: 1.5rem;">
+        <a href="{% url 'play_story' story.id %}" class="btn btn-success">▶ Play Story</a>
+        {% if has_saved_session %}
+            <span style="color: #27ae60; margin-left: 1rem;">💾 You have a saved game</span>
+        {% endif %}
+        
+        {% if can_edit %}
+            <a href="{% url 'edit_story' story.id %}" class="btn">✏️ Edit</a>
+        {% endif %}
+        
+        {% if user.is_authenticated %}
+            <a href="{% url 'story_tree' story.id %}" class="btn">🌳 View Story Tree</a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Level 13: Ending Statistics -->
+{% if ending_stats %}
+<div class="card">
+    <h2>📊 Ending Statistics ({{ total_plays }} total plays)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Ending</th>
+                <th>Times Reached</th>
+                <th>Percentage</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for label, stats in ending_stats.items %}
+            <tr>
+                <td>{{ label }}</td>
+                <td>{{ stats.count }}</td>
+                <td>{{ stats.percentage }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<!-- Level 18: Ratings Section -->
+<div class="card">
+    <h2>⭐ Ratings & Reviews</h2>
+    
+    {% if avg_rating %}
+        <p style="font-size: 1.5rem; color: #f39c12;">
+            ⭐ {{ avg_rating }}/5.0 ({{ ratings.count }} ratings)
+        </p>
+    {% else %}
+        <p>No ratings yet. Be the first to rate this story!</p>
+    {% endif %}
+    
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'rate_story' story.id %}" style="margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 4px;">
+            {% csrf_token %}
+            <h3>{% if user_rating %}Update{% else %}Leave{% endif %} Your Rating</h3>
+            <div class="form-group">
+                <label>Stars (1-5):</label>
+                <select name="stars" required>
+                    <option value="">Select...</option>
+                    {% for i in "12345" %}
+                        <option value="{{ forloop.counter }}" {% if user_rating and user_rating.stars == forloop.counter %}selected{% endif %}>
+                            {{ forloop.counter }} Star{% if forloop.counter > 1 %}s{% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Comment (optional):</label>
+                <textarea name="comment">{% if user_rating %}{{ user_rating.comment }}{% endif %}</textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Submit Rating</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'login' %}">Login</a> to rate this story.</p>
+    {% endif %}
+    
+    <!-- Display ratings -->
+    {% if ratings %}
+        <h3 style="margin-top: 2rem;">Recent Reviews:</h3>
+        {% for rating in ratings %}
+            <div style="border-bottom: 1px solid #ddd; padding: 1rem 0;">
+                <strong>{{ rating.user.username }}</strong> - 
+                <span class="rating">{% for i in "12345" %}{% if forloop.counter <= rating.stars %}⭐{% endif %}{% endfor %}</span>
+                <span style="color: #95a5a6; font-size: 0.9rem;">{{ rating.created_at|date:"M d, Y" }}</span>
+                {% if rating.comment %}
+                    <p>{{ rating.comment }}</p>
+                {% endif %}
+                {% if rating.user == user %}
+                    <form method="post" action="{% url 'delete_rating' rating.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete your rating?')">Delete</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<!-- Level 18: Report Story -->
+{% if user.is_authenticated %}
+<div class="card">
+    <h3>🚩 Report This Story</h3>
+    <form method="post" action="{% url 'report_story' story.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Reason:</label>
+            <select name="reason" required>
+                <option value="">Select a reason...</option>
+                <option value="spam">Spam</option>
+                <option value="inappropriate">Inappropriate Content</option>
+                <option value="offensive">Offensive Language</option>
+                <option value="copyright">Copyright Violation</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Description:</label>
+            <textarea name="description" required placeholder="Please explain..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-danger">Submit Report</button>
+    </form>
+</div>
+{% endif %}
+
+<div style="margin-top: 1rem;">
+    <a href="{% url 'home' %}" class="btn btn-secondary">← Back to Stories</a>
+</div>
+{% endblock %}

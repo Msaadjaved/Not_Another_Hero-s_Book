@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Browse Stories - NAHB{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>📖 Choose Your Adventure</h1>
+    <p>Welcome to NAHB! Explore interactive stories where your choices determine the outcome.</p>
+    
+    <!-- Level 13: Search functionality -->
+    <form method="get" style="margin-top: 1.5rem;">
+        <div class="form-group">
+            <input type="text" name="search" placeholder="Search stories by title or description..." 
+                   value="{{ search_query }}" style="width: 70%; display: inline-block;">
+            <button type="submit" class="btn">Search</button>
+            {% if search_query %}
+                <a href="{% url 'home' %}" class="btn btn-secondary">Clear</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+{% if stories %}
+    <div class="story-grid">
+        {% for story in stories %}
+            <div class="story-card">
+                <h3>{{ story.title }}</h3>
+                <p>{{ story.description|truncatewords:20 }}</p>
+                
+                <div class="meta">
+                    <span class="badge badge-{{ story.status }}">{{ story.status|title }}</span>
+                    
+                    <!-- Level 18: Display ratings -->
+                    {% if story.avg_rating %}
+                        <span class="rating">
+                            ⭐ {{ story.avg_rating }}/5.0 ({{ story.rating_count }} ratings)
+                        </span>
+                    {% endif %}
+                </div>
+                
+                <a href="{% url 'story_detail' story.id %}" class="btn">View Details</a>
+                <a href="{% url 'play_story' story.id %}" class="btn btn-success">Play Now</a>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card">
+        <p>No published stories found. {% if search_query %}Try a different search.{% else %}Check back later!{% endif %}</p>
+    </div>
+{% endif %}
+{% endblock %}
