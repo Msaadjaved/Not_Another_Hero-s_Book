@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Profile - NAHB{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>👤 {{ user.username }}'s Profile</h1>
+    <p><strong>Role:</strong> {{ user.profile.get_role_display }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Joined:</strong> {{ user.date_joined|date:"M d, Y" }}</p>
+</div>
+
+<div class="card">
+    <h2>📖 Recent Plays</h2>
+    {% if play_data %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Story</th>
+                    <th>Ending</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in play_data %}
+                <tr>
+                    <td><a href="{% url 'story_detail' item.story.id %}">{{ item.story.title }}</a></td>
+                    <td>{{ item.ending_page.ending_label|default:"Ending" }}</td>
+                    <td>{{ item.play.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <a href="{% url 'player_path' item.play.id %}" class="btn" style="padding: 0.25rem 0.75rem; font-size: 0.9rem;">
+                            🗺️ View Path
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No plays yet!</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>⭐ Your Recent Ratings</h2>
+    {% if ratings %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Story</th>
+                    <th>Rating</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rating in ratings %}
+                <tr>
+                    <td>Story {{ rating.story_id }}</td>
+                    <td>
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= rating.stars %}⭐{% endif %}
+                        {% endfor %}
+                        ({{ rating.stars }}/5)
+                    </td>
+                    <td>{{ rating.created_at|date:"M d, Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You haven't rated any stories yet.</p>
+    {% endif %}
+</div>
+
+<div style="margin-top: 1rem;">
+    <a href="{% url 'home' %}" class="btn btn-secondary">← Back to Home</a>
+</div>
+{% endblock %}
